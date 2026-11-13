@@ -1,0 +1,44 @@
+{
+	"name": "ds_bronze_hive",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adls_gen2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"v_table_name": {
+				"type": "string"
+			},
+			"v_year": {
+				"type": "string"
+			},
+			"v_month": {
+				"type": "string"
+			},
+			"v_day": {
+				"type": "string"
+			},
+			"p_page": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat('page_', dataset().p_page, '.json')",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@concat('world-bank/', dataset().v_table_name, '/year=', dataset().v_year, '/month=', dataset().v_month, '/day=', dataset().v_day)",
+					"type": "Expression"
+				},
+				"fileSystem": "bronze"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

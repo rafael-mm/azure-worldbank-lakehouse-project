@@ -1,0 +1,103 @@
+{
+	"name": "pl_ingest_countries",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get countries metadata",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": "https://api.worldbank.org/v2/country?format=json&per_page=100"
+				}
+			},
+			{
+				"name": "Loop countries pages",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get countries metadata",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@range(1, int(json(activity('Get countries metadata').output.Response)[0].pages))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Ingest data",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET"
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_worldbank_countries",
+									"type": "DatasetReference",
+									"parameters": {
+										"p_page": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_bronze_countries",
+									"type": "DatasetReference",
+									"parameters": {
+										"p_page": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2026-11-09T17:35:04Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,15 @@
+{
+	"name": "adf-worldbank-project",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "brazilsouth",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "9a6218e1-551b-43c5-8903-41a35bbda88f",
+		"tenantId": "2b791e46-c994-44a9-aaf9-4fd98b89277c"
+	}
+}
