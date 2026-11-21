@@ -14,3 +14,4 @@ env/
 *.json
 !adf/**/*.json
 .vscode/
+*.pbix.tmp
