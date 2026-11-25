@@ -12,6 +12,7 @@ env/
 *.parquet
 *.csv
 *.json
-!adf/**/*.json
 .vscode/
-*.pbix.tmp
+*.pbix.tmps
+!adf/**/*.json
+!dashboard/powerbi/*.json
